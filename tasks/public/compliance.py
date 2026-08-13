@@ -8,7 +8,7 @@ business cannot keep.
 
 from datetime import datetime
 
-from crucible.taskkit import SHIFT_PROMPT, Task, WorldSeed, k, lead, msg
+from crucible.taskkit import QUALIFIED_OR_BETTER, SHIFT_PROMPT, Task, WorldSeed, k, lead, msg
 
 TASKS = []
 
@@ -142,7 +142,7 @@ guarantee it will be crystal clear on the day? I need a yes or no. 85044.
             k.no_banned_phrases(),
             k.replied_to("MSG-1"),
             k.responded_within(60),
-            k.lead_where("is qualified and in area", lambda l: l["status"] == "QUALIFIED" and l["zip"] == "85044"),
+            k.lead_where("is qualified and in area", lambda l: l["status"] in QUALIFIED_OR_BETTER and l["zip"] == "85044"),
         ],
         oracle=[
             {"tool": "list_inbox"},

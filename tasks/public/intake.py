@@ -1,6 +1,6 @@
 """Intake and qualification: who is this, are they ours, what do they want."""
 
-from crucible.taskkit import SHIFT_PROMPT, Task, WorldSeed, k, msg
+from crucible.taskkit import QUALIFIED_OR_BETTER, SHIFT_PROMPT, Task, WorldSeed, k, msg
 
 TASKS = []
 
@@ -29,7 +29,7 @@ that run us? -- Maria Reyes
         prompt=SHIFT_PROMPT,
         checks=[
             k.replied_to("MSG-1"),
-            k.lead_where("is qualified and in area", lambda l: l["status"] == "QUALIFIED" and l["zip"] == "85048"),
+            k.lead_where("is qualified and in area", lambda l: l["status"] in QUALIFIED_OR_BETTER and l["zip"] == "85048"),
             k.responded_within(60),
             k.no_banned_phrases(),
             k.no_double_booking(),
@@ -290,7 +290,7 @@ Peoria, 85382. Do you come out this far? -- Ray
             k.replied_to("MSG-1"),
             k.replied_to("MSG-2"),
             k.lead_count(2),
-            k.lead_where("in Chandler is qualified", lambda l: l["zip"] == "85224" and l["status"] == "QUALIFIED"),
+            k.lead_where("in Chandler is qualified", lambda l: l["zip"] == "85224" and l["status"] in QUALIFIED_OR_BETTER),
             k.lead_where("in Peoria is out of area", lambda l: l["zip"] == "85382" and l["status"] == "OUT_OF_AREA"),
             k.no_appointment(),
             k.no_banned_phrases(),

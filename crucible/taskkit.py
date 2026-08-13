@@ -18,6 +18,9 @@ SHIFT_PROMPT = (
 )
 
 
+QUALIFIED_OR_BETTER = ("QUALIFIED", "QUOTED", "BOOKED")
+
+
 def msg(mid, frm, subject, body, channel="email", received_at="2026-03-10T07:52:00"):
     return {
         "id": mid,
