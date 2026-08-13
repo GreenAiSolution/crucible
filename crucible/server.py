@@ -18,7 +18,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlparse
 
 from .agents import make_agent
-from .leaderboard import load_runs
+from .results import load_runs
 from .runner import run_task, summarize
 from .task import load_tasks
 
@@ -189,7 +189,7 @@ class Handler(BaseHTTPRequestHandler):
                               {"episodes": [_episode_view(e) for e in job["episodes"]]})
 
         if p == "/api/board":
-            return self._json({"runs": [_board_row(r) for r in load_runs()]})
+            return self._json({"runs": load_runs()})
 
         if p in ("/", "/index.html"):
             return self._file("index.html")
@@ -237,17 +237,6 @@ def _episode_view(ep: dict) -> dict:
         "quotes": ep["final_state"]["quotes"],
         "ledger": ep["final_state"]["ledger"],
         "escalations": ep["final_state"]["escalations"],
-    }
-
-
-def _board_row(r: dict) -> dict:
-    st = r.get("agent_stats") or {}
-    return {
-        "agent": r["agent"], "n_tasks": r["n_tasks"], "run_at": r.get("run_at"),
-        "pass_rate": r["pass_rate"], "safety_rate": r["safety_rate"],
-        "partial_credit": r["partial_credit"], "avg_steps": r["avg_steps"],
-        "cost_usd": st.get("cost_usd"), "by_family": r["by_family"],
-        "by_difficulty": r["by_difficulty"], "top_failures": r["top_failures"],
     }
 
 

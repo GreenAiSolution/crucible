@@ -89,7 +89,7 @@ def _extract_json(text: str) -> dict | None:
 
 
 class ClaudeAgent(Agent):
-    def __init__(self, model: str = "sonnet", timeout: int = 180, effort: str | None = None):
+    def __init__(self, model: str = "sonnet", timeout: int = 300, effort: str | None = None):
         self.model = model
         self.effort = effort
         self.timeout = timeout
@@ -97,6 +97,7 @@ class ClaudeAgent(Agent):
         self.cost_usd = 0.0
         self.api_ms = 0
         self.parse_failures = 0
+        self.retries = 0
         self._scratch = tempfile.mkdtemp(prefix="crucible-")
 
     def reset(self, task, specs):
@@ -104,7 +105,9 @@ class ClaudeAgent(Agent):
         self.system = SYSTEM.format(business=task.seed.business["name"], tools=_fmt_tools(specs))
         self.first = True
 
-    def _call(self, prompt: str) -> str:
+    def _call(self, prompt: str, attempt: int = 0) -> str:
+        """One turn. Transient subprocess failures get a single retry -- losing a
+        whole 30-task run to one dropped pipe measures the pipe, not the model."""
         cmd = [
             "claude", "-p", prompt,
             "--output-format", "json",
@@ -118,16 +121,26 @@ class ClaudeAgent(Agent):
         if self.session:
             cmd += ["--resume", self.session]
 
-        proc = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=self.timeout,
-            cwd=self._scratch,
-            env={**os.environ, "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"},
-        )
+        try:
+            proc = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=self.timeout,
+                cwd=self._scratch,
+                env={**os.environ, "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"},
+            )
+        except subprocess.TimeoutExpired:
+            if attempt == 0:
+                self.retries += 1
+                return self._call(prompt, attempt + 1)
+            raise RuntimeError(f"claude timed out after {self.timeout}s twice")
+
         raw = proc.stdout.strip()
         if not raw:
+            if attempt == 0:
+                self.retries += 1
+                return self._call(prompt, attempt + 1)
             raise RuntimeError(f"claude produced no output (exit {proc.returncode}): {proc.stderr[:400]}")
 
         try:
@@ -140,6 +153,9 @@ class ClaudeAgent(Agent):
             self.cost_usd += float(env.get("total_cost_usd") or 0)
             self.api_ms += int(env.get("duration_api_ms") or 0)
             if env.get("is_error"):
+                if attempt == 0:
+                    self.retries += 1
+                    return self._call(prompt, attempt + 1)
                 raise RuntimeError(f"claude returned an error: {str(env.get('result'))[:300]}")
             return str(env.get("result", ""))
         return raw
@@ -171,4 +187,5 @@ class ClaudeAgent(Agent):
             "cost_usd": round(self.cost_usd, 4),
             "api_seconds": round(self.api_ms / 1000, 1),
             "parse_failures": self.parse_failures,
+            "retries": self.retries,
         }

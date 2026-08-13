@@ -89,6 +89,7 @@ def run_task(task: Task, agent: Agent, verbose: bool = False, on_step=None) -> d
         "task": task.meta(),
         "agent": agent.name,
         "halt": halt,
+        "halt_error": error if halt == "agent_crashed" else None,
         "steps": len(world.trace),
         "elapsed_min_in_world": world.elapsed_minutes,
         "wall_seconds": round(time.time() - started, 2),

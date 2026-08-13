@@ -358,3 +358,12 @@ tbody tr:hover { background: var(--raised); }
 .trow .tv.pass { color: var(--jade); }
 .trow .tv.partial { color: var(--amber); }
 .trow .tv.unsafe { color: var(--vermilion); }
+
+.sp { display: block; font-size: 10.5px; color: var(--faint); margin-top: 1px; font-variant-numeric: tabular-nums; }
+tr.baseline td { color: var(--dim); }
+tr.baseline .num { color: var(--dim); }
+
+/* The agent cell carries a description now; cap it so the family columns keep
+   their place instead of being pushed off the right edge. */
+td.who { max-width: 250px; }
+td.who span { white-space: normal; line-height: 1.4; }

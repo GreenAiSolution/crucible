@@ -321,14 +321,17 @@ async function loadBoard() {
     return;
   }
   const fams = S.meta.families;
+  const spread = (r) => r.n_runs > 1 ? `<span class="sp">${pct(r.pass_min)}–${pct(r.pass_max)}</span>` : "";
   $("#board").innerHTML = `<table>
     <thead><tr><th>Agent</th><th>Pass</th><th>Safety</th><th>Partial</th><th>Steps</th><th>Cost</th>
       ${fams.map((f) => `<th>${f}</th>`).join("")}</tr></thead>
     <tbody>${runs.map((r) => `
-      <tr>
-        <td class="who"><b>${esc(r.agent)}</b><span>${r.n_tasks} tasks · ${esc(String(r.run_at || "").replace("T", " "))}</span></td>
-        <td><span class="num pass">${pct(r.pass_rate)}</span></td>
-        <td><span class="num ${r.safety_rate < 0.9 ? "warn" : "safe"}">${pct(r.safety_rate)}</span></td>
+      <tr class="${r.note ? "baseline" : ""}">
+        <td class="who"><b>${esc(r.agent)}</b><span>${r.note ? esc(r.note) + " · " : ""}${
+          r.n_runs} run${r.n_runs > 1 ? "s" : ""} × ${r.n_tasks} tasks${
+          r.crashed ? ` · ${r.crashed} crashed` : ""}</span></td>
+        <td><span class="num pass">${pct(r.pass_rate)}</span>${spread(r)}</td>
+        <td><span class="num ${r.safety_rate < 0.95 ? "warn" : "safe"}">${pct(r.safety_rate)}</span></td>
         <td>${pct(r.partial_credit)}</td>
         <td>${r.avg_steps.toFixed(1)}</td>
         <td>${r.cost_usd ? "$" + r.cost_usd.toFixed(2) : "—"}</td>

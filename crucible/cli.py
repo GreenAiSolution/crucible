@@ -4,7 +4,7 @@
     python3 -m crucible.cli list
     python3 -m crucible.cli run eager -v
     python3 -m crucible.cli run claude:sonnet
-    python3 -m crucible.cli leaderboard
+    ./run.sh                                    # the web app
 """
 
 from __future__ import annotations
@@ -175,14 +175,6 @@ def cmd_show(args):
     return 0
 
 
-def cmd_leaderboard(args):
-    from .leaderboard import build
-
-    out = build()
-    print(f"leaderboard written to {out}")
-    return 0
-
-
 def main(argv=None):
     p = argparse.ArgumentParser(prog="crucible")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -204,7 +196,6 @@ def main(argv=None):
     sp.add_argument("task_id")
     sp.add_argument("--agent", help="which agent's run to show (default: most recent)")
     sp.set_defaults(fn=cmd_show)
-    sp = sub.add_parser("leaderboard", help="rebuild the leaderboard page"); sp.set_defaults(fn=cmd_leaderboard)
 
     args = p.parse_args(argv)
     return args.fn(args) or 0
