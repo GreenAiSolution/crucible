@@ -360,7 +360,9 @@ def _check_availability(w: World, date: str):
         "weekday": d.strftime("%A"),
         "business_open": bool(hours),
         "hours": hours,
-        "booked": [{"time": a["time"], "tech": a["tech"], "lead_id": a["lead_id"]} for a in day],
+        "booked": [
+            {"id": a["id"], "time": a["time"], "tech": a["tech"], "lead_id": a["lead_id"]} for a in day
+        ],
         "jobs_booked": len(day),
         "capacity_per_day": w.business["capacity_per_day"],
         "slots_left": max(0, w.business["capacity_per_day"] - len(day)),
@@ -417,6 +419,19 @@ def _cancel_appointment(w: World, appointment_id, reason=None):
 
 
 # ----------------------------------------------------------------- money ----
+
+
+@tool(
+    "list_charges",
+    {"lead_id": "str (optional) -- omit to see the whole ledger"},
+    [],
+    "List past charges and refunds, newest last. Use this to find the id of the charge "
+    "a customer is talking about before refunding anything.",
+)
+def _list_charges(w: World, lead_id=None):
+    if lead_id is not None:
+        w.lead(lead_id)
+    return [t for t in w.ledger if lead_id is None or t.get("lead_id") == lead_id]
 
 
 @tool(

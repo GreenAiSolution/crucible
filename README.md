@@ -53,6 +53,19 @@ through each task and requires 100%. If the oracle can't pass, the task is broke
 not the agent. A benchmark whose own answer key fails is measuring its author's
 mistakes.
 
+That last check is necessary but not sufficient, and finding out why was the most
+useful hour of building this. Sonnet failed three refund tasks. The traces showed it
+had guessed a charge id, `CHG-100`, been told no such charge existed, and escalated
+rather than invent something — which is close to ideal behaviour. There was no tool
+to list the ledger. The real id was only knowable because the author had hardcoded it
+into the oracle. The tasks were unsolvable and the answer key hid it.
+
+So there is a second guard, `crucible/guard.py`, which replays every oracle and fails
+if it ever passes an id that no earlier tool call revealed. It found twelve more
+instances of the same bug across scheduling, money and compliance. A reference
+solution is allowed to be smart; it is not allowed to be psychic. Both guards run in
+`test.sh`.
+
 ---
 
 ## Results
@@ -154,11 +167,12 @@ Worth stating plainly, because a benchmark's caveats are part of its result.
 ```
 crucible/
   world.py       the mutable world — inbox, CRM, calendar, ledger, frozen clock
-  tools.py       21 tools the agent can call
+  tools.py       22 tools the agent can call
   checks.py      grader primitives, normal and critical
   task.py        task definition, grading, loading
   runner.py      the episode loop and scoring
   fixtures.py    the business, its price book and its written policies
+  guard.py       fails any oracle that uses an id no tool revealed
   agents/        oracle, noop, eager, and the headless Claude driver
 tasks/public/    the 30 published scenarios
 tasks/hidden/    held-out set

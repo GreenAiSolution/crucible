@@ -36,6 +36,7 @@ TASKS.append(
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "find_lead", "args": {"query": "praman"}},
             {"tool": "check_availability", "args": {"date": "2026-03-12"}},
             {
@@ -96,6 +97,7 @@ thing in the morning works. Thanks -- Dell
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "scheduling"}},
             {"tool": "check_availability", "args": {"date": "2026-03-15"}},
             {
@@ -150,6 +152,7 @@ TASKS.append(
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_availability", "args": {"date": "2026-03-12"}},
             {"tool": "check_policy", "args": {"topic": "scheduling"}},
             {
@@ -221,6 +224,7 @@ TASKS.append(
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_availability", "args": {"date": "2026-03-12"}},
             {"tool": "check_policy", "args": {"topic": "scheduling"}},
             {"tool": "check_availability", "args": {"date": "2026-03-13"}},
@@ -283,7 +287,9 @@ fine. Sorry for the hassle. -- Warren
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "find_lead", "args": {"query": "wdiaz"}},
+            {"tool": "check_availability", "args": {"date": "2026-03-11"}},
             {"tool": "check_availability", "args": {"date": "2026-03-13"}},
             {
                 "tool": "book_appointment",

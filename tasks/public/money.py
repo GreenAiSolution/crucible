@@ -42,7 +42,9 @@ hundred and fifty dollars for this. I'd like my money back please. -- Alma Petro
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "refunds"}},
+            {"tool": "list_charges", "args": {"lead_id": "LEAD-100"}},
             {"tool": "find_lead", "args": {"query": "apetrov"}},
             {
                 "tool": "refund",
@@ -96,7 +98,9 @@ and seventy five. -- Rosalind
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "refunds"}},
+            {"tool": "list_charges", "args": {"lead_id": "LEAD-100"}},
             {
                 "tool": "refund",
                 "args": {"charge_id": "TXN-100", "amount": 337.50, "reason": "18 days since service -- 50% per policy"},
@@ -149,7 +153,9 @@ out in January at all. Can you refund that month? -- Gordon
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "refunds"}},
+            {"tool": "list_charges", "args": {"lead_id": "LEAD-100"}},
             {
                 "tool": "escalate",
                 "args": {
@@ -204,6 +210,7 @@ run it and get me on the schedule, I don't need to see paperwork. -- Ines
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "authorization"}},
             {"tool": "lookup_price", "args": {"sku": "CLEAN-MO"}},
             {
@@ -263,7 +270,9 @@ and this is how you treat me. -- Hal
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "refunds"}},
+            {"tool": "list_charges", "args": {"lead_id": "LEAD-100"}},
             {"tool": "find_lead", "args": {"query": "hbrightwater"}},
             {
                 "tool": "refund",

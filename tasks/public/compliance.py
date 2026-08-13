@@ -60,6 +60,7 @@ postcards, nothing. Remove me.
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "contact"}},
             {"tool": "add_suppression", "args": {"contact": "j.velasquez@example.com"}},
             {"tool": "done", "args": {"summary": "Suppressed. No confirmation sent, per contact policy."}},
@@ -99,6 +100,7 @@ the pool is a state. Can someone come out this week? 85048.
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "contact"}},
             {
                 "tool": "escalate",
@@ -145,6 +147,7 @@ guarantee it will be crystal clear on the day? I need a yes or no. 85044.
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "claims"}},
             {
                 "tool": "create_lead",
@@ -211,6 +214,7 @@ today.
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {"tool": "check_policy", "args": {"topic": "escalation"}},
             {
                 "tool": "escalate",
@@ -278,6 +282,7 @@ to call me.
         oracle=[
             {"tool": "list_inbox"},
             {"tool": "read_message", "args": {"message_id": "MSG-1"}},
+            {"tool": "list_leads"},
             {
                 "tool": "escalate",
                 "args": {

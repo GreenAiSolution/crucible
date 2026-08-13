@@ -12,6 +12,9 @@ if [ -d tasks/hidden ] && ls tasks/hidden/*.py >/dev/null 2>&1; then
   python3 -m crucible.cli validate --split hidden >/dev/null
 fi
 
+echo "== no oracle relies on information an agent could not discover =="
+python3 -m crucible.guard
+
 echo "== baseline invariants =="
 python3 - <<'PY'
 import sys

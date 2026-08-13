@@ -123,7 +123,7 @@ def build() -> pathlib.Path:
   <div class="cards">
     <div class="card"><div class="n">{n_tasks}</div><div class="l">public tasks</div></div>
     <div class="card"><div class="n">6</div><div class="l">task families</div></div>
-    <div class="card"><div class="n">21</div><div class="l">tools in the world</div></div>
+    <div class="card"><div class="n">22</div><div class="l">tools in the world</div></div>
     <div class="card"><div class="n">{len(real)}</div><div class="l">models scored</div></div>
   </div>
 
