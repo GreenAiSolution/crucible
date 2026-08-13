@@ -1,0 +1,9 @@
+# The held-out set is deliberately not published. Public tasks can be studied;
+# if the holdout were in the repo it would stop being a holdout.
+tasks/hidden/
+
+results/*.json
+results/*.log
+__pycache__/
+*.pyc
+.DS_Store
