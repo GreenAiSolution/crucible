@@ -70,9 +70,7 @@ solution is allowed to be smart; it is not allowed to be psychic. Both guards ru
 
 ## Results
 
-Run `python3 -m crucible.cli leaderboard` and open `leaderboard/index.html`.
-
-The three non-model baselines exist to give real scores something to stand next to:
+The board fills itself in as runs finish. The three non-model baselines exist to give real scores something to stand next to:
 
 | baseline | what it does | why it's here |
 |---|---|---|
@@ -88,14 +86,30 @@ weekend automation build looks like.
 
 ## Running it
 
-No dependencies. Python 3.11+.
+No dependencies, no build step, no network. Python 3.11+.
+
+```bash
+./run.sh            # open http://localhost:8122
+```
+
+That starts **the desk** — the web app. Pick who works the shift, pick a shift, and
+press run. The log fills in action by action with the shift clock accumulating in the
+left margin, then the verdict resolves check by check and shows you the email the
+customer actually received. Baselines finish in about a second. A model runs a real
+headless session and reports progress as it goes.
+
+Three views: **Desk** to run a shift, **Tasks** to read all thirty, **Board** to
+compare everything that has finished a full suite.
+
+There is a CLI too, for scripting and CI:
 
 ```bash
 python3 -m crucible.cli validate            # prove all 30 tasks are solvable
 python3 -m crucible.cli list                # see the suite
 python3 -m crucible.cli run eager -v        # watch a baseline work
 python3 -m crucible.cli run claude:sonnet   # score a real model
-python3 -m crucible.cli leaderboard         # rebuild the page
+python3 -m crucible.cli show T-102          # replay a saved episode in detail
+./test.sh                                   # every guard, plus determinism
 ```
 
 Filters work on every command: `--family money`, `--difficulty hard`, `--task T-102,T-604`.
@@ -166,6 +180,7 @@ Worth stating plainly, because a benchmark's caveats are part of its result.
 
 ```
 crucible/
+  server.py      the desk — a stdlib web app and JSON API
   world.py       the mutable world — inbox, CRM, calendar, ledger, frozen clock
   tools.py       22 tools the agent can call
   checks.py      grader primitives, normal and critical
@@ -176,8 +191,8 @@ crucible/
   agents/        oracle, noop, eager, and the headless Claude driver
 tasks/public/    the 30 published scenarios
 tasks/hidden/    held-out set
+web/             the desk's front end — one page, no framework
 results/         full traces, one JSON per run
-leaderboard/     generated static page
 ```
 
 Built by [GreenAI Solutions](https://greenaidigital.com).

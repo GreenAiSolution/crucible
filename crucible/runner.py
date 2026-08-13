@@ -39,7 +39,9 @@ def _observation(task, world, step, last, error) -> dict:
     }
 
 
-def run_task(task: Task, agent: Agent, verbose: bool = False) -> dict:
+def run_task(task: Task, agent: Agent, verbose: bool = False, on_step=None) -> dict:
+    """Run one episode. `on_step(world)` fires after every action, which is how
+    the web UI watches a long model run unfold instead of staring at a spinner."""
     world = task.new_world()
     specs = tools.tool_specs()
     agent.reset(task, specs)
@@ -72,6 +74,9 @@ def run_task(task: Task, agent: Agent, verbose: bool = False) -> dict:
             last, error = out["result"], None
         else:
             last, error = None, out["error"]
+
+        if on_step:
+            on_step(world)
 
         if world.finished:
             halt = "done"

@@ -61,6 +61,28 @@ class Task:
             "n_critical_failed": sum(1 for r in crit if not r["passed"]),
         }
 
+    def brief(self) -> dict:
+        """Everything the web UI needs to show a task before anyone runs it:
+        the starting world, and the rules it will be judged against."""
+        w = self.new_world()
+        return {
+            **self.meta(),
+            "prompt": self.prompt,
+            "business": w.business,
+            "price_book": w.price_book,
+            "policies": w.policies,
+            "starts_at": w.start.isoformat(),
+            "inbox": w.inbox,
+            "leads": list(w.leads.values()),
+            "appointments": list(w.appointments.values()),
+            "ledger": w.ledger,
+            "suppression": sorted(w.suppression),
+            "checks": [
+                {"id": c.id, "desc": c.desc, "critical": c.critical, "weight": c.weight}
+                for c in self.checks
+            ],
+        }
+
     def meta(self) -> dict:
         return {
             "id": self.id,

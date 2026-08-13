@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRUCIBLE — the desk</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div>
+    <div class="mark">Crucible</div>
+  </div>
+  <div class="tagline">a verifiable environment for business-operations agents</div>
+  <nav class="views" id="views">
+    <button data-view="desk" aria-current="true">Desk</button>
+    <button data-view="tasks">Tasks</button>
+    <button data-view="board">Board</button>
+  </nav>
+</header>
+
+<!-- ------------------------------------------------------------- DESK -- -->
+<section class="view on" id="view-desk">
+  <div class="desk-shell">
+
+    <aside class="rail">
+      <div class="rail-block">
+        <div class="label">Who works the shift</div>
+        <div id="agents"></div>
+      </div>
+      <div class="rail-block" style="border-bottom:0">
+        <div class="label">The shift</div>
+        <div class="filters" id="filters"></div>
+      </div>
+      <div class="tlist" id="tasklist"></div>
+    </aside>
+
+    <div class="desk">
+      <div class="suite" id="suite">
+        <div class="label">Running the full suite</div>
+        <div id="suite-txt" class="tagline"></div>
+        <div class="bar"><i id="suite-bar"></i></div>
+      </div>
+
+      <div class="desk-head">
+        <div>
+          <div class="crumbs" id="crumbs"></div>
+          <h1 id="title">Pick a shift</h1>
+          <div class="tagline" id="subtitle"></div>
+        </div>
+        <button class="run" id="run" disabled>Run this shift</button>
+        <button class="run ghost" id="runall" disabled>Loading</button>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="panel" id="tally" hidden>
+            <h3>Suite results <span id="tally-count" class="tagline"></span></h3>
+            <div id="tally-rows"></div>
+          </div>
+          <div id="brief">
+          <div class="label">What came in</div>
+          <div id="inbox"></div>
+          <div class="panel" id="worldpanel" hidden>
+            <h3>On the books before the shift</h3>
+            <div class="pad" id="world"></div>
+          </div>
+          <div class="panel">
+            <h3>What it will be judged on <span id="ncrit" class="tagline"></span></h3>
+            <div class="pad"><div class="chips" id="checkchips"></div></div>
+          </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="label">The shift</div>
+          <div class="shift">
+            <div class="shift-head">
+              <div class="meter"><b id="clock">+0<i>m</i></b><span>shift clock</span></div>
+              <div class="meter sm"><b id="acts">0</b><span>actions</span></div>
+              <div class="meter sm"><b id="score">—</b><span>checks passed</span></div>
+            </div>
+            <div class="log" id="log"></div>
+            <div class="verdict" id="verdict"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ TASKS -- -->
+<section class="view" id="view-tasks">
+  <div class="wrap">
+    <h2>The suite</h2>
+    <p class="lede">Thirty shifts at the same desk. Every one starts from the same frozen
+    world and is graded by code that reads the world afterwards. Pick one to work it.</p>
+    <div class="filters" id="filters2"></div>
+    <div class="grid" id="taskgrid"></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------ BOARD -- -->
+<section class="view" id="view-board">
+  <div class="wrap">
+    <h2>The board</h2>
+    <p class="lede">Every agent that has finished a full suite run. <b>Pass</b> is every check
+    on a task. <b>Safety</b> is never breaking a hard rule — charging a card without
+    authority, double-booking, quoting outside the service area, leaking a customer.
+    They are separate columns because they are separate questions.</p>
+    <div class="board" id="board"></div>
+    <p class="note">Rows appear here when a run covers the whole suite. Baselines are
+    instant. A model run takes a while and writes its full trace to <b>results/</b> —
+    every observation, every action, and the reason each check landed the way it did.</p>
+  </div>
+</section>
+
+<script src="/app.js"></script>
+</body>
+</html>
