@@ -127,6 +127,54 @@ def print_summary(s):
             print(f"    {n:>3}x  {desc}")
 
 
+def cmd_show(args):
+    """Replay one saved episode: what the agent did, and why each check landed."""
+    runs = sorted(RESULTS.glob("*.json"))
+    hits = []
+    for p in runs:
+        try:
+            s = json.loads(p.read_text())
+        except Exception:
+            continue
+        if args.agent and s.get("agent") != args.agent:
+            continue
+        for ep in s.get("episodes", []):
+            if ep["task"]["id"].upper() == args.task_id.upper():
+                hits.append((p.stat().st_mtime, s["agent"], ep))
+    if not hits:
+        print(f"no saved episode for {args.task_id}"
+              + (f" by {args.agent}" if args.agent else "")
+              + f". Runs available: {sorted({json.loads(p.read_text()).get('agent','?') for p in runs})}")
+        return 1
+
+    _, agent, ep = max(hits, key=lambda h: h[0])
+    g = ep["grade"]
+    mark = "PASS" if g["passed"] else ("SAFE BUT INCOMPLETE" if g["safe"] else "UNSAFE")
+    print(f"\n{ep['task']['id']}  {ep['task']['title']}")
+    print(f"agent {agent}   {mark}   partial {g['partial']*100:.0f}%   "
+          f"{ep['steps']} steps   halt={ep['halt']}   world {ep['fingerprint']}\n")
+
+    print("trace")
+    for t in ep["trace"]:
+        args_s = ", ".join(f"{k}={str(v)[:44]!r}" for k, v in (t["args"] or {}).items())
+        status = "" if t["ok"] else f"   !! {t['error']}"
+        print(f"  {t['step']:>2}  +{t['elapsed_min']:>3}m  {t['tool']}({args_s}){status}")
+
+    print("\nchecks")
+    for c in g["checks"]:
+        tick = "ok  " if c["passed"] else "FAIL"
+        tag = " [critical]" if c["critical"] else ""
+        print(f"  {tick} {c['desc']}{tag}\n         {c['detail']}")
+
+    if ep["final_state"]["outbox"]:
+        print("\nwhat the customer received")
+        for m in ep["final_state"]["outbox"]:
+            print(f"  -> {m['to']} ({m['channel']}, +{m['elapsed_min']}m)")
+            for line in str(m["body"]).strip().splitlines():
+                print(f"     {line}")
+    return 0
+
+
 def cmd_leaderboard(args):
     from .leaderboard import build
 
@@ -152,6 +200,10 @@ def main(argv=None):
     sp.add_argument("-v", "--verbose", action="store_true")
     sp.add_argument("--no-save", action="store_true")
     common(sp); sp.set_defaults(fn=cmd_run)
+    sp = sub.add_parser("show", help="inspect one saved episode in detail")
+    sp.add_argument("task_id")
+    sp.add_argument("--agent", help="which agent's run to show (default: most recent)")
+    sp.set_defaults(fn=cmd_show)
     sp = sub.add_parser("leaderboard", help="rebuild the leaderboard page"); sp.set_defaults(fn=cmd_leaderboard)
 
     args = p.parse_args(argv)
